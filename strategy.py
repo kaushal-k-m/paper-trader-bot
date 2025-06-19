@@ -1,10 +1,10 @@
 import pandas as pd
-import talib
+import ta
 
 def calculate_rsi(data):
     close = data['Close']
-    rsi = talib.RSI(close, timeperiod=14)
-    return rsi.iloc[-1] if not rsi.isna().all() else None
+    rsi_series = ta.momentum.RSIIndicator(close, window=14).rsi()
+    return rsi_series.iloc[-1] if not rsi_series.isna().all() else None
 
 def generate_signal(data, sentiment):
     rsi_value = calculate_rsi(data)
