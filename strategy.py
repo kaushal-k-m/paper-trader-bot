@@ -2,9 +2,17 @@ import pandas as pd
 import ta
 
 def calculate_rsi(data):
-    close = data['Close']
-    rsi_series = ta.momentum.RSIIndicator(close, window=14).rsi()
-    return rsi_series.iloc[-1] if not rsi_series.isna().all() else None
+    close = data['Close'].dropna()
+
+    if len(close) < 15:
+        return None  # Not enough data for 14-period RSI
+
+    try:
+        rsi_series = ta.momentum.RSIIndicator(close, window=14).rsi()
+        return rsi_series.dropna().iloc[-1]
+    except Exception as e:
+        print("RSI Calculation Failed:", e)
+        return None
 
 def generate_signal(data, sentiment):
     rsi_value = calculate_rsi(data)
